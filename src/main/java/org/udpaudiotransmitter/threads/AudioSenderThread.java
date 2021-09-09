@@ -68,4 +68,9 @@ public class AudioSenderThread extends Thread {
     public void setIp(InetAddress ip) {
         this.ip = ip;
     }
+
+    public void close() {
+        microphone.close();
+    }
+
 }

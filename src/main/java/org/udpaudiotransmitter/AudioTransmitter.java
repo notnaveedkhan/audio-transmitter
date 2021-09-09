@@ -35,17 +35,14 @@ public class AudioTransmitter {
         if (!audioListenerStarted && !audioSenderStarted) {
             System.out.println("1) Start audio listener");
             System.out.println("2) Start audio sender");
-        }
-        else if (audioListenerStarted && !audioSenderStarted) {
+        } else if (audioListenerStarted && !audioSenderStarted) {
             System.out.println("1) Stop audio listener");
             System.out.println("2) Start audio sender");
-        }
-        else if (!audioListenerStarted && audioSenderStarted) {
+        } else if (!audioListenerStarted && audioSenderStarted) {
             System.out.println("1) Start audio listener");
             System.out.println("2) Stop audio sender");
             System.out.println("u) Update audio sender.");
-        }
-        else {
+        } else {
             System.out.println("[Error] Something went wrong in print menu.");
         }
         System.out.println("3) Shutdown audio transmitter");
@@ -53,35 +50,37 @@ public class AudioTransmitter {
     }
 
     public void start() {
-        while(!isClosed) {
+        while (!isClosed) {
             printMainMenu();
             String option = input.getWord();
             if (option.equals("1")) {
-                if (!audioListenerStarted) {
+                if (!audioListenerStarted && !audioSenderStarted) {
                     startAudioListener();
                 } else {
                     stopAudioListener();
                 }
-            }
-            else if (option.equals("2")) {
-                if (!audioSenderStarted) {
+            } else if (option.equals("2")) {
+                if (!audioSenderStarted && !audioListenerStarted) {
                     startAudioSender();
                 } else {
                     stopAudioSender();
                 }
-            }
-            else if (option.equals("3")) {
+            } else if (option.equals("3")) {
                 System.out.println("Shutting down audio transmitter ...");
                 isClosed = true;
-            }
-            else if (option.equals("u")) {
+                if (audioListenerStarted) {
+                    stopAudioListener();
+                }
+                if (audioSenderStarted) {
+                    stopAudioSender();
+                }
+            } else if (option.equals("u")) {
                 if (audioSenderStarted) {
                     updateAudioSender();
                 } else {
                     System.out.println("[Error] You have selected invalid option.");
                 }
-            }
-            else {
+            } else {
                 System.out.println("[Error] You have selected invalid option.");
             }
         }
@@ -120,9 +119,14 @@ public class AudioTransmitter {
     private void stopAudioSender() {
         audioSenderThread.setStopSender(true);
         while (audioSenderThread.isAlive()) {
-            audioSenderThread.stop();
+            try {
+                audioSenderThread.stop();
+            } catch (Exception e) {
+                System.out.println("[Error] " + e.getMessage());
+            }
         }
         audioSenderStarted = false;
+        audioSenderThread.close();
         socket.close();
         System.out.println("[Info] Audio sender has stopped.");
     }
@@ -172,9 +176,14 @@ public class AudioTransmitter {
     private void stopAudioListener() {
         audioReceiverThread.setStopReceiving(true);
         while (audioReceiverThread.isAlive()) {
-            audioReceiverThread.stop();
+            try {
+                audioReceiverThread.stop();
+            } catch (Exception e) {
+                System.out.println("[Error] " + e.getMessage());
+            }
         }
         audioListenerStarted = false;
+        audioReceiverThread.close();
         socket.close();
         System.out.println("[Info] Audio listener has stopped.");
     }

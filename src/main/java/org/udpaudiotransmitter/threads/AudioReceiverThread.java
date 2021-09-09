@@ -50,4 +50,8 @@ public class AudioReceiverThread extends Thread {
         this.stopReceiving = stopReceiving;
     }
 
+    public void close() {
+        speakers.close();
+    }
+
 }
