@@ -21,7 +21,7 @@ public class AudioSenderThread extends Thread {
         this.port = port;
         this.ip = ip;
         stopSender = false;
-        AudioFormat format = new AudioFormat(8000.0f, 16, 1, true, true);
+        AudioFormat format = new AudioFormat(48000.0f, 16, 1, true, true);
         microphone = AudioSystem.getTargetDataLine(format);
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
         microphone = (TargetDataLine) AudioSystem.getLine(info);
@@ -33,7 +33,7 @@ public class AudioSenderThread extends Thread {
         microphone.start();
         byte[] buffer;
         while (!stopSender) {
-            buffer = new byte[1024];
+            buffer = new byte[100];
             int read = microphone.read(buffer, 0, buffer.length);
             packet = new DatagramPacket(buffer, read, ip, port);
             try {

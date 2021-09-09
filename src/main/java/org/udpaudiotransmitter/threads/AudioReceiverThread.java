@@ -19,7 +19,7 @@ public class AudioReceiverThread extends Thread {
         this.socket = socket;
         this.port = port;
         stopReceiving = false;
-        AudioFormat format = new AudioFormat(8000.0f, 16, 1, true, true);
+        AudioFormat format = new AudioFormat(48000.0f, 16, 1, true, true);
         DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, format);
         speakers = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
         speakers.open(format);
@@ -31,7 +31,7 @@ public class AudioReceiverThread extends Thread {
         speakers.start();
         while (!isStopReceiving()) {
             try {
-                buffer = new byte[1024];
+                buffer = new byte[100];
                 packet = new DatagramPacket(buffer, buffer.length);
                 socket.receive(packet);
                 speakers.write(packet.getData(), 0, packet.getLength());
