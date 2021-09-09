@@ -1,7 +1,5 @@
 package org.udpaudiotransmitter.util;
 
-import com.sun.istack.internal.NotNull;
-
 import java.io.InputStream;
 import java.util.Scanner;
 
@@ -9,7 +7,7 @@ public class ConsoleInput {
 
     private Scanner scan;
 
-    public ConsoleInput(@NotNull InputStream source) {
+    public ConsoleInput(InputStream source) {
         scan = new Scanner(source);
     }
 
