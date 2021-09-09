@@ -4,6 +4,7 @@ import org.udpaudiotransmitter.threads.AudioReceiverThread;
 import org.udpaudiotransmitter.threads.AudioSenderThread;
 import org.udpaudiotransmitter.util.ConsoleInput;
 
+import javax.sound.sampled.LineUnavailableException;
 import java.io.IOException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -125,6 +126,9 @@ public class AudioTransmitter {
             } catch (UnknownHostException e) {
                 System.out.println("[Error] Some error has occurred to deal with provided listener address.");
                 System.out.println("[Reason] " + e.getMessage());
+            } catch (LineUnavailableException e) {
+                System.out.println("[Error] Some error has occurred while initializing audio sender objects.");
+                System.out.println("[Reason] " + e.getMessage());
             }
         }
     }
@@ -162,6 +166,9 @@ public class AudioTransmitter {
                 System.out.println("[Error] Input value must be a numeric value");
             } catch (SocketException e) {
                 System.out.println("[Error] Some error has occurred while starting the listener server.");
+                System.out.println("[Reason] " + e.getMessage());
+            } catch (LineUnavailableException e) {
+                System.out.println("[Error] Some error has occurred while initializing audio receiving objects.");
                 System.out.println("[Reason] " + e.getMessage());
             }
         }
