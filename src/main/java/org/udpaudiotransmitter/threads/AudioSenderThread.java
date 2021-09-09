@@ -52,4 +52,20 @@ public class AudioSenderThread extends Thread {
     public void setStopSender(boolean stopSender) {
         this.stopSender = stopSender;
     }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public InetAddress getIp() {
+        return ip;
+    }
+
+    public void setIp(InetAddress ip) {
+        this.ip = ip;
+    }
 }

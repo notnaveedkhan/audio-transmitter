@@ -5,13 +5,11 @@ import org.udpaudiotransmitter.threads.AudioSenderThread;
 import org.udpaudiotransmitter.util.ConsoleInput;
 
 import javax.sound.sampled.LineUnavailableException;
-import java.io.IOException;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 
 public class AudioTransmitter {
 
-    private ConsoleInput input;
+    private final ConsoleInput input;
     private boolean audioListenerStarted;
     private boolean audioSenderStarted;
     private boolean isClosed;
@@ -45,6 +43,7 @@ public class AudioTransmitter {
         else if (!audioListenerStarted && audioSenderStarted) {
             System.out.println("1) Start audio listener");
             System.out.println("2) Stop audio sender");
+            System.out.println("u) Update audio sender.");
         }
         else {
             System.out.println("[Error] Something went wrong in print menu.");
@@ -56,27 +55,64 @@ public class AudioTransmitter {
     public void start() {
         while(!isClosed) {
             printMainMenu();
-            switch (input.getWord()) {
-                case "1":
-                    if (!audioListenerStarted) {
-                        startAudioListener();
-                    } else {
-                        stopAudioListener();
-                    }
-                    break;
-                case "2":
-                    if (!audioSenderStarted) {
-                        startAudioSender();
-                    } else {
-                        stopAudioSender();
-                    }
-                    break;
-                case "3":
-                    System.out.println("Shutting down audio transmitter ...");
-                    isClosed = true;
-                    break;
-                default:
+            String option = input.getWord();
+            if (option.equals("1")) {
+                if (!audioListenerStarted) {
+                    startAudioListener();
+                } else {
+                    stopAudioListener();
+                }
+            }
+            else if (option.equals("2")) {
+                if (!audioSenderStarted) {
+                    startAudioSender();
+                } else {
+                    stopAudioSender();
+                }
+            }
+            else if (option.equals("3")) {
+                System.out.println("Shutting down audio transmitter ...");
+                isClosed = true;
+            }
+            else if (option.equals("u")) {
+                if (audioSenderStarted) {
+                    updateAudioSender();
+                } else {
                     System.out.println("[Error] You have selected invalid option.");
+                }
+            }
+            else {
+                System.out.println("[Error] You have selected invalid option.");
+            }
+        }
+    }
+
+    private void updateAudioSender() {
+        boolean isSuccess = false;
+        while (!isSuccess) {
+            try {
+                System.out.print("Enter port of listener (0 mean default port: 4385): ");
+                int tempPort = input.inputInt();
+                if (tempPort == 0) {
+                    tempPort = port;
+                }
+                System.out.print("Enter address of listener (0 mean localhost): ");
+                String tempAddress = input.getLine();
+                if (tempAddress.equals("0")) {
+                    tempAddress = ipAddress;
+                }
+                InetAddress ip = InetAddress.getByName(tempAddress);
+                port = tempPort;
+                ipAddress = tempAddress;
+                audioSenderThread.setPort(port);
+                audioSenderThread.setIp(ip);
+                System.out.printf("[Info] Audio sender is updated now sending data on port %d of address %s%n", port, ipAddress);
+                isSuccess = true;
+            } catch (NumberFormatException ignored) {
+                System.out.println("[Error] Input value must be a numeric value");
+            } catch (UnknownHostException e) {
+                System.out.println("[Error] Some error has occurred to deal with provided listener address.");
+                System.out.println("[Reason] " + e.getMessage());
             }
         }
     }
