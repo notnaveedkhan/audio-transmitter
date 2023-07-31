@@ -1,8 +1,3 @@
-### About
-The Java audio transmitter CLI tool allows you to transmit audio from one computer to another using the UDP protocol. It provides a simple Command Line Interface (CLI) to start and stop the audio listener and sender. This tool leverages the DatagramSocket and DatagramPacket classes for UDP communication and uses threads to handle audio reception and transmission concurrently.
-
-### README.md
-
 # Java Audio Transmitter CLI Tool
 
 ![Java](https://img.shields.io/badge/Java-8%2B-orange)
